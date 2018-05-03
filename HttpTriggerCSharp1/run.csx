@@ -17,6 +17,8 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string clientSecret_CONFIG_KEY = "AppSecret";
     string clientId = System.Environment.GetEnvironmentVariable(clientId_CONFIG_KEY, EnvironmentVariableTarget.Process);
     string clientSecret = System.Environment.GetEnvironmentVariable(clientSecret_CONFIG_KEY, EnvironmentVariableTarget.Process);
+    string SPUserName = System.Environment.GetEnvironmentVariable("SPUserName",EnvironmentVariableTarget.Process);
+    string SPPassword = System.Environment.GetEnvironmentVariable("SPPassword",EnvironmentVariableTarget.Process);
  //   string tenantUrl = System.Environment.GetEnvironmentVariable(tenantUrl_CONFIG_KEY, EnvironmentVariableTarget.Process);
 
  console.log("")
@@ -25,9 +27,9 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         req.CreateResponse(HttpStatusCode.BadRequest,
            new { body = "Application configuration missing for Function App" });
     }
-    string completeUrl = "https://codesigned.sharepoint.com/Departments/Development";
+    string completeUrl = "https://codesignedintranet.sharepoint.com/sites/dev/Communities/SPFx/";
     OfficeDevPnP.Core.AuthenticationManager authManager = new OfficeDevPnP.Core.AuthenticationManager();
-    ClientContext siteContext = authManager.GetSharePointOnlineAuthenticatedContextTenant(completeUrl, "pmathur@codesigned.com", "SunnyDay88");
+    ClientContext siteContext = authManager.GetSharePointOnlineAuthenticatedContextTenant(completeUrl, SPUserName, SPPassword);
     //Tenant tenant = new Tenant(tenantContext);
     try
     {
@@ -52,7 +54,8 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info(folder.Name.ToString());
     */    
 
-        // Adds Publishing Page  
+        // Adds Publishing Page 
+
        siteContext.Web.AddPublishingPage( pageName, pageTemplate, pageTitle, toBePublished, null,startTime,endTime,scheduled);  
        // log.Info(pubPage.ToString());
       //  siteContext.Load(pubPage);
